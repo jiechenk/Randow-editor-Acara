@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Rundown editor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .editor-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .editor-header {
+            background: linear-gradient(135deg, #2d5016 0%, #4caf50 100%);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 7px;
+            text-align: center;
+        }
+        
+        .editor-header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border-left: 5px solid #4caf50;
+        }
+        
+        .form-section h3 {
+            color: #2d5016;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #4caf50;
+        }
+        
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .activity-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #f44336;
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.9em;
+        }
+        
+        .btn-add {
+            background: #2196f3;
+            color: white;
+            margin-top: 10px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .preview {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: none;
+        }
+        
+        .preview.show {
+            display: block;
+        }
+        
+        .preview-header {
+            background: linear-gradient(135deg, #2d5016 0%, #3a7d1e 50%, #4caf50 100%);
+            color: white;
+            padding: 5px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .preview-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .preview-content {
+            padding: 15px;
+        }
+        
+.timeline {
+  position: relative;
+  padding-left: 52px;
+}
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #4caf50, #8bc34a);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+            padding-left: 30px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -24px;
+            top: 5px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #4caf50;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #4caf50;
+        }
+        
+        .time {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #2d5016;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+        
+        .activity {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #4caf50;
+            margin-top: 8px;
+        }
+        
+        .activity h4 {
+            color: #2d5016;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        
+        .activity p {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left: 5px solid #ff9800;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .info-box h3 {
+            color: #e65100;
+            margin-bottom: 10px;
+        }
+        
+        .info-list {
+            margin-left: 20px;
+            color: #5d4037;
+        }
+        
+        .info-list li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .preview-footer {
+            background: #2d5016;
+            color: white;
+            text-align: center;
+            padding: 11px;
+            font-size: 0.9em;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .editor-panel {
+                display: none;
+            }
+            
+            .button-group {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .editor-panel {
+                padding: 15px;
+            }
+            
+            .preview-header h1 {
+                font-size: 1.8em;
+            }
+            
+            .preview-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Editor Panel -->
+        <div class="editor-panel">
+            <div class="editor-header">
+                <h1> Rundown Editor </h1>
+                <p>Isi form di bawah untuk membuat rundown </p>
+            </div>
+            
+            <!-- Informasi Umum -->
+            <div class="form-section">
+                <h3>📋 Informasi Umum</h3>
+                <div class="form-group">
+                    <label>Judul Program:</label>
+                    <input type="text" id="title" value="Pendidikan Dasar TSCA" placeholder="Masukkan judul program">
+                </div>
+                <div class="form-group">
+                    <label>Sub Judul:</label>
+                    <input type="text" id="subtitle" value="Program Cinta Alam & Konservasi Ekosistem" placeholder="Masukkan sub judul">
+                </div>
+                <div class="form-group">
+                    <label>Tanggal Kegiatan:</label>
+                    <input type="date" id="eventDate">
+                </div>
+                <div class="form-group">
+                    <label>Tempat:</label>
+                    <input type="text" id="location" value="Area Konservasi Hutan Tropis Sulawesi" placeholder="Masukkan lokasi">
+                </div>
+                <div class="form-group">
+                    <label>Target:</label>
+                    <input type="text" id="participants" value="Panitia & Peserta" placeholder="Masukkan target peserta">
+                </div>
+            </div>
+            
+            <!-- Jadwal Kegiatan -->
+            <div class="form-section">
+                <h3>⏰ Jadwal Kegiatan</h3>
+                <div id="scheduleContainer"></div>
+                <button class="btn btn-add" onclick="addSchedule()">+ Tambah Jadwal</button>
+            </div>
+            
+            <!-- Informasi Tambahan -->
+            <div class="form-section">
+                <h3>ℹ️ Informasi Tambahan</h3>
+                <div class="form-group">
+                    <label>Perlengkapan yang Dibawa:</label>
+                    <textarea id="equipment" placeholder="Pisahkan dengan koma (,)">Topi, sepatu trekking, air minum, buku catatan, alat tulis</textarea>
+                </div>
+                <div class="form-group">
+                    <label>Catatan Penting:</label>
+                    <textarea id="notes" placeholder="Masukkan catatan penting">Kegiatan disesuaikan dengan cuaca dan kondisi lapangan</textarea>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="togglePreview()">👁️ Tampilkan Preview</button>
+                <button class="btn btn-secondary" onclick="window.print()">🖨️ Cetak/Download PDF</button>
+            </div>
+        </div>
+        
+        <!-- Preview Panel -->
+        <div class="preview" id="preview">
+            <div class="preview-header">
+                <h1 id="previewTitle"> Pendidikan Dasar Tropis Sulawesi </h1>
+                <p id="previewSubtitle">Program Cinta Alam & Konservasi Ekosistem</p>
+            </div>
+            
+            <div class="preview-content">
+                <div id="previewSchedule"></div>
+                
+                <div class="info-box">
+                    <h3>ℹ️ Informasi Penting</h3>
+                    <ul class="info-list" id="previewInfo"></ul>
+                </div>
+            </div>
+            
+            <div class="preview-footer">
+                <p>CARE ENVIRONMENT FOR LIVE SURVIVAL</p>
+                <p style="margin-top: 10px; font-size: 0.85em; opacity: 0.9;"> TROPIS SULAWESI CINTA ALAM </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let scheduleCount = 0;
+        const schedules = {};
+
+        // Inisialisasi dengan contoh data
+        function init() {
+            addSchedule('08:00', '08:30', 'Registrasi & Pembukaan', 'Peserta melakukan registrasi, pembagian kelompok, dan pengarahan umum kegiatan.');
+            addSchedule('08:30', '10:00', 'Sesi 1: Pengenalan Ekosistem Tropis', 'Materi tentang keanekaragaman hayati Sulawesi dan fauna endemik.');
+            addSchedule('10:00', '10:15', 'Istirahat & Snack', 'Waktu istirahat sambil menikmati snack lokal.');
+        }
+
+        function addSchedule(startTime = '', endTime = '', title = '', description = '') {
+            scheduleCount++;
+            const id = scheduleCount;
+            schedules[id] = { startTime, endTime, title, description };
+
+            const scheduleHTML = `
+                <div class="activity-item" id="schedule-${id}">
+                    <div class="activity-header">
+                        <h4>Kegiatan #${id}</h4>
+                        <button class="btn btn-danger" onclick="removeSchedule(${id})">🗑️ Hapus</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Waktu Mulai:</label>
+                        <input type="time" id="startTime-${id}" value="${startTime}" onchange="updateSchedule(${id})">
+                    </div>
+                    <div class="form-group">
+                        <label>Waktu Selesai:</label>
+                        <input type="time" id="endTime-${id}" value="${endTime}" onchange="updateSchedule(${id})">
+                    </div>
+                    <div class="form-group">
+                        <label>Judul Kegiatan:</label>
+                        <input type="text" id="title-${id}" value="${title}" placeholder="Contoh: Registrasi & Pembukaan" onchange="updateSchedule(${id})">
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi Kegiatan:</label>
+                        <textarea id="description-${id}" placeholder="Jelaskan detail kegiatan..." onchange="updateSchedule(${id})">${description}</textarea>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('scheduleContainer').insertAdjacentHTML('beforeend', scheduleHTML);
+        }
+
+        function updateSchedule(id) {
+            schedules[id] = {
+                startTime: document.getElementById(`startTime-${id}`).value,
+                endTime: document.getElementById(`endTime-${id}`).value,
+                title: document.getElementById(`title-${id}`).value,
+                description: document.getElementById(`description-${id}`).value
+            };
+        }
+
+        function removeSchedule(id) {
+            delete schedules[id];
+            document.getElementById(`schedule-${id}`).remove();
+            generatePreview();
+        }
+
+        function generatePreview() {
+            // Update header
+            const title = document.getElementById('title').value;
+            const subtitle = document.getElementById('subtitle').value;
+            document.getElementById('previewTitle').textContent = ` ${title} `;
+            document.getElementById('previewSubtitle').textContent = subtitle;
+
+            // Generate schedule timeline
+            let scheduleHTML = '<div class="timeline">';
+            
+            Object.keys(schedules).sort((a, b) => {
+                const timeA = schedules[a].startTime;
+                const timeB = schedules[b].startTime;
+                return timeA.localeCompare(timeB);
+            }).forEach(id => {
+                const s = schedules[id];
+                if (s.startTime && s.title) {
+                    scheduleHTML += `
+                        <div class="timeline-item">
+                            <div class="time">${s.startTime} - ${s.endTime}</div>
+                            <div class="activity">
+                                <h4>${s.title}</h4>
+                                <p>${s.description}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            scheduleHTML += '</div>';
+            document.getElementById('previewSchedule').innerHTML = scheduleHTML;
+
+            // Generate info
+            const location = document.getElementById('location').value;
+            const participants = document.getElementById('participants').value;
+            const eventDate = document.getElementById('eventDate').value;
+            const equipment = document.getElementById('equipment').value;
+            const notes = document.getElementById('notes').value;
+
+            let infoHTML = '';
+            if (eventDate) {
+                const date = new Date(eventDate);
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                infoHTML += `<li><strong>Tanggal:</strong> ${date.toLocaleDateString('id-ID', options)}</li>`;
+            }
+            if (location) infoHTML += `<li><strong>Tempat:</strong> ${location}</li>`;
+            if (participants) infoHTML += `<li><strong>Target:</strong> ${participants}</li>`;
+            if (equipment) {
+                const items = equipment.split(',').map(item => item.trim()).filter(item => item);
+                if (items.length > 0) {
+                    infoHTML += `<li><strong>Perlengkapan:</strong> ${items.join(', ')}</li>`;
+                }
+            }
+            if (notes) infoHTML += `<li><strong>Catatan:</strong> ${notes}</li>`;
+
+            document.getElementById('previewInfo').innerHTML = infoHTML;
+        }
+
+        function togglePreview() {
+            const preview = document.getElementById('preview');
+            const btn = event.target;
+            
+            if (preview.classList.contains('show')) {
+                preview.classList.remove('show');
+                btn.textContent = '👁️ Tampilkan Preview';
+                preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                generatePreview();
+                preview.classList.add('show');
+                btn.textContent = '🙈 Sembunyikan Preview';
+                setTimeout(() => {
+                    preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        }
+
+        // Update preview saat input berubah
+        // (dinonaktifkan untuk mode manual preview)
+
+        // Initialize
+        window.onload = init;
+    </script>
+</body>
+</html>
