@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4caf50">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Rundown Editor Mobile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Mobile Header */
+        .mobile-header {
+            background: linear-gradient(135deg, #2d5016, #4caf50);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .mobile-header h1 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+        
+        .mobile-header p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        /* Swiper Container */
+        .swiper-wrapper {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+        }
+        
+        .swiper-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .swipe-section {
+            min-width: 100vw;
+            width: 100vw;
+            scroll-snap-align: start;
+            padding: 15px;
+            padding-bottom: 80px;
+        }
+        
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            margin-bottom: 15px;
+        }
+        
+        .card h2 {
+            color: #2d5016;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            border-bottom: 3px solid #4caf50;
+            padding-bottom: 10px;
+        }
+        
+        .card h3 {
+            color: #4caf50;
+            font-size: 1.1rem;
+            margin: 20px 0 12px 0;
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4caf50;
+            box-shadow: 0 0 0 3px rgba(76,175,80,0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        /* Activity Item */
+        .activity-item {
+            background: #f9f9f9;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .activity-header h4 {
+            color: #2d5016;
+            font-size: 1rem;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76,175,80,0.3);
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #ff9800, #ffa726);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255,152,0,0.3);
+        }
+        
+        .btn-add {
+            background: linear-gradient(135deg, #2196f3, #42a5f5);
+            color: white;
+            box-shadow: 0 4px 15px rgba(33,150,243,0.3);
+        }
+        
+        .btn-danger {
+            background: #f44336;
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            width: auto;
+        }
+        
+        /* Preview Section */
+        .preview-container {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .preview-header {
+            background: linear-gradient(135deg, #2d5016, #3a7d1e, #4caf50);
+            color: white;
+            padding: 25px 15px;
+            text-align: center;
+        }
+        
+        .preview-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .preview-header p {
+            font-size: 0.9rem;
+            opacity: 0.95;
+        }
+        
+        .preview-content {
+            padding: 20px 15px;
+        }
+        
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 35px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #4caf50, #8bc34a);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 8px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4caf50;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #4caf50;
+        }
+        
+        .time {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #2d5016;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+        
+        .activity {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 10px;
+            border-left: 4px solid #4caf50;
+            margin-top: 8px;
+        }
+        
+        .activity h4 {
+            color: #2d5016;
+            margin-bottom: 6px;
+            font-size: 1rem;
+        }
+        
+        .activity p {
+            color: #555;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+        
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            border-left: 5px solid #ff9800;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .info-box h3 {
+            color: #e65100;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .info-list {
+            margin-left: 15px;
+            color: #5d4037;
+        }
+        
+        .info-list li {
+            margin-bottom: 8px;
+            line-height: 1.4;
+            font-size: 0.9rem;
+        }
+        
+        .preview-footer {
+            background: #2d5016;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.85rem;
+        }
+        
+        .preview-footer p:first-child {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        /* Navigation Dots */
+        .nav-dots {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            background: rgba(0,0,0,0.5);
+            padding: 8px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            z-index: 99;
+        }
+        
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-dot.active {
+            width: 24px;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: white;
+            margin-top: 15px;
+            font-size: 1rem;
+        }
+        
+        /* Swipe Hint */
+        .swipe-hint {
+            text-align: center;
+            padding: 10px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            animation: fadeInOut 3s infinite;
+        }
+        
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .mobile-header,
+            .nav-dots,
+            .swipe-hint,
+            .btn {
+                display: none !important;
+            }
+            
+            .swiper-wrapper {
+                display: block;
+                overflow: visible;
+            }
+            
+            .swipe-section {
+                min-width: 100%;
+                width: 100%;
+                padding: 0;
+            }
+            
+            .card {
+                display: none;
+            }
+            
+            .preview-container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="mobile-header">
+        <h1>📋 Rundown Editor</h1>
+        <p>Buat dan kelola jadwal kegiatan</p>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Memproses...</div>
+    </div>
+    
+    <!-- Swiper Container -->
+    <div class="swiper-wrapper" id="swiperWrapper">
+        
+        <!-- Section 1: Informasi Umum -->
+        <div class="swipe-section" data-section="0">
+            <div class="card">
+                <h2>📋 Informasi Umum</h2>
+                
+                <div class="form-group">
+                    <label>Judul Program:</label>
+                    <input type="text" id="title" value="Pendidikan Dasar TSCA" placeholder="Masukkan judul program">
+                </div>
+                
+                <div class="form-group">
+                    <label>Sub Judul:</label>
+                    <input type="text" id="subtitle" value="Program Cinta Alam & Konservasi Ekosistem" placeholder="Masukkan sub judul">
+                </div>
+                
+                <div class="form-group">
+                    <label>Tanggal Kegiatan:</label>
+                    <input type="date" id="eventDate">
+                </div>
+                
+                <div class="form-group">
+                    <label>Tempat:</label>
+                    <input type="text" id="location" value="Area Konservasi Hutan Tropis Sulawesi" placeholder="Masukkan lokasi">
+                </div>
+                
+                <div class="form-group">
+                    <label>Target Peserta:</label>
+                    <input type="text" id="participants" value="Panitia & Peserta" placeholder="Masukkan target peserta">
+                </div>
+                
+                <button class="btn btn-primary" onclick="saveAndNext()">✅ Simpan & Lanjut</button>
+            </div>
+            <div class="swipe-hint">← Geser untuk section berikutnya →</div>
+        </div>
+        
+        <!-- Section 2: Jadwal Kegiatan -->
+        <div class="swipe-section" data-section="1">
+            <div class="card">
+                <h2>⏰ Jadwal Kegiatan</h2>
+                <div id="scheduleContainer"></div>
+                <button class="btn btn-add" onclick="addSchedule()">+ Tambah Jadwal Baru</button>
+            </div>
+            <div class="swipe-hint">← Geser untuk navigasi →</div>
+        </div>
+        
+        <!-- Section 3: Informasi Tambahan -->
+        <div class="swipe-section" data-section="2">
+            <div class="card">
+                <h2>ℹ️ Informasi Tambahan</h2>
+                
+                <div class="form-group">
+                    <label>Perlengkapan yang Dibawa:</label>
+                    <textarea id="equipment" placeholder="Pisahkan dengan koma (,)">Topi, sepatu trekking, air minum, buku catatan, alat tulis</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Catatan Penting:</label>
+                    <textarea id="notes" placeholder="Masukkan catatan penting">Kegiatan disesuaikan dengan cuaca dan kondisi lapangan</textarea>
+                </div>
+                
+                <button class="btn btn-primary" onclick="saveInfo()">✅ Simpan Informasi</button>
+            </div>
+            <div class="swipe-hint">← Geser untuk navigasi →</div>
+        </div>
+        
+        <!-- Section 4: Preview & Export -->
+        <div class="swipe-section" data-section="3">
+            <div class="preview-container">
+                <div class="preview-header">
+                    <h1 id="previewTitle">📋 Pendidikan Dasar TSCA</h1>
+                    <p id="previewSubtitle">Program Cinta Alam & Konservasi Ekosistem</p>
+                </div>
+                
+                <div class="preview-content">
+                    <div id="previewSchedule"></div>
+                    
+                    <div class="info-box">
+                        <h3>ℹ️ Informasi Penting</h3>
+                        <ul class="info-list" id="previewInfo"></ul>
+                    </div>
+                </div>
+                
+                <div class="preview-footer">
+                    <p>CARE ENVIRONMENT FOR LIVE SURVIVAL</p>
+                    <p>🌿 TROPIS SULAWESI CINTA ALAM</p>
+                </div>
+            </div>
+            
+            <div style="padding: 15px;">
+                <button class="btn btn-primary" onclick="refreshPreview()">🔄 Perbarui Preview</button>
+                <button class="btn btn-secondary" onclick="window.print()">🖨️ Cetak/Download PDF</button>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- Navigation Dots -->
+    <div class="nav-dots" id="navDots">
+        <div class="nav-dot active"></div>
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+    </div>
+    
+    <script>
+        let scheduleCount = 0;
+        const schedules = {};
+        let currentSection = 0;
+        
+        // Swiper functionality
+        const swiperWrapper = document.getElementById('swiperWrapper');
+        const navDots = document.querySelectorAll('.nav-dot');
+        
+        // Update navigation dots
+        function updateNavDots(index) {
+            navDots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+        
+        // Detect scroll position
+        swiperWrapper.addEventListener('scroll', () => {
+            const scrollLeft = swiperWrapper.scrollLeft;
+            const sectionWidth = window.innerWidth;
+            const newSection = Math.round(scrollLeft / sectionWidth);
+            
+            if (newSection !== currentSection) {
+                currentSection = newSection;
+                updateNavDots(currentSection);
+                
+                // Auto refresh preview when entering section 3
+                if (currentSection === 3) {
+                    generatePreview();
+                }
+            }
+        });
+        
+        // Click navigation dots to jump to section
+        navDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                const sectionWidth = window.innerWidth;
+                swiperWrapper.scrollTo({
+                    left: sectionWidth * index,
+                    behavior: 'smooth'
+                });
+                currentSection = index;
+                updateNavDots(index);
+            });
+        });
+        
+        // Initialize with sample data
+        function init() {
+            addSchedule('08:00', '08:30', 'Registrasi & Pembukaan', 'Peserta melakukan registrasi, pembagian kelompok, dan pengarahan umum kegiatan.');
+            addSchedule('08:30', '10:00', 'Sesi 1: Pengenalan Ekosistem Tropis', 'Materi tentang keanekaragaman hayati Sulawesi dan fauna endemik.');
+            addSchedule('10:00', '10:15', 'Istirahat & Snack', 'Waktu istirahat sambil menikmati snack lokal.');
+            
+            // Set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('eventDate').value = today;
+        }
+        
+        // Add schedule
+        function addSchedule(startTime = '', endTime = '', title = '', description = '') {
+            scheduleCount++;
+            const id = scheduleCount;
+            schedules[id] = { startTime, endTime, title, description };
+            
+            const scheduleHTML = `
+                <div class="activity-item" id="schedule-${id}">
+                    <div class="activity-header">
+                        <h4>Kegiatan #${id}</h4>
+                        <button class="btn btn-danger" onclick="removeSchedule(${id})">🗑️ Hapus</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Waktu Mulai:</label>
+                        <input type="time" id="startTime-${id}" value="${startTime}" onchange="updateSchedule(${id})">
+                    </div>
+                    <div class="form-group">
+                        <label>Waktu Selesai:</label>
+                        <input type="time" id="endTime-${id}" value="${endTime}" onchange="updateSchedule(${id})">
+                    </div>
+                    <div class="form-group">
+                        <label>Judul Kegiatan:</label>
+                        <input type="text" id="title-${id}" value="${title}" placeholder="Contoh: Registrasi & Pembukaan" onchange="updateSchedule(${id})">
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi Kegiatan:</label>
+                        <textarea id="description-${id}" placeholder="Jelaskan detail kegiatan..." onchange="updateSchedule(${id})">${description}</textarea>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('scheduleContainer').insertAdjacentHTML('beforeend', scheduleHTML);
+            
+            // Scroll to new item
+            setTimeout(() => {
+                const newItem = document.getElementById(`schedule-${id}`);
+                if (newItem) {
+                    newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }, 100);
+        }
+        
+        // Update schedule
+        function updateSchedule(id) {
+            schedules[id] = {
+                startTime: document.getElementById(`startTime-${id}`).value,
+                endTime: document.getElementById(`endTime-${id}`).value,
+                title: document.getElementById(`title-${id}`).value,
+                description: document.getElementById(`description-${id}`).value
+            };
+        }
+        
+        // Remove schedule
+        function removeSchedule(id) {
+            if (confirm('Hapus kegiatan ini?')) {
+                delete schedules[id];
+                document.getElementById(`schedule-${id}`).remove();
+                showToast('Kegiatan berhasil dihapus');
+            }
+        }
+        
+        // Generate preview
+        function generatePreview() {
+            // Update header
+            const title = document.getElementById('title').value;
+            const subtitle = document.getElementById('subtitle').value;
+            document.getElementById('previewTitle').textContent = `📋 ${title}`;
+            document.getElementById('previewSubtitle').textContent = subtitle;
+            
+            // Generate schedule timeline
+            let scheduleHTML = '<div class="timeline">';
+            
+            const sortedSchedules = Object.keys(schedules).sort((a, b) => {
+                const timeA = schedules[a].startTime;
+                const timeB = schedules[b].startTime;
+                return timeA.localeCompare(timeB);
+            });
+            
+            if (sortedSchedules.length === 0) {
+                scheduleHTML += '<p style="text-align: center; color: #999; padding: 20px;">Belum ada jadwal kegiatan</p>';
+            } else {
+                sortedSchedules.forEach(id => {
+                    const s = schedules[id];
+                    if (s.startTime && s.title) {
+                        scheduleHTML += `
+                            <div class="timeline-item">
+                                <div class="time">${s.startTime} - ${s.endTime || '—'}</div>
+                                <div class="activity">
+                                    <h4>${s.title}</h4>
+                                    <p>${s.description || 'Tidak ada deskripsi'}</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            }
+            
+            scheduleHTML += '</div>';
+            document.getElementById('previewSchedule').innerHTML = scheduleHTML;
+            
+            // Generate info
+            const location = document.getElementById('location').value;
+            const participants = document.getElementById('participants').value;
+            const eventDate = document.getElementById('eventDate').value;
+            const equipment = document.getElementById('equipment').value;
+            const notes = document.getElementById('notes').value;
+            
+            let infoHTML = '';
+            if (eventDate) {
+                const date = new Date(eventDate);
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                infoHTML += `<li><strong>Tanggal:</strong> ${date.toLocaleDateString('id-ID', options)}</li>`;
+            }
+            if (location) infoHTML += `<li><strong>Tempat:</strong> ${location}</li>`;
+            if (participants) infoHTML += `<li><strong>Target:</strong> ${participants}</li>`;
+            if (equipment) {
+                const items = equipment.split(',').map(item => item.trim()).filter(item => item);
+                if (items.length > 0) {
+                    infoHTML += `<li><strong>Perlengkapan:</strong> ${items.join(', ')}</li>`;
+                }
+            }
+            if (notes) infoHTML += `<li><strong>Catatan:</strong> ${notes}</li>`;
+            
+            if (!infoHTML) {
+                infoHTML = '<li style="color: #999;">Belum ada informasi tambahan</li>';
+            }
+            
+            document.getElementById('previewInfo').innerHTML = infoHTML;
+        }
+        
+        // Save and navigate
+        function saveAndNext() {
+            const title = document.getElementById('title').value;
+            const eventDate = document.getElementById('eventDate').value;
+            
+            if (!title) {
+                alert('⚠️ Judul program tidak boleh kosong!');
+                return;
+            }
+            
+            if (!eventDate) {
+                alert('⚠️ Tanggal kegiatan tidak boleh kosong!');
+                return;
+            }
+            
+            showToast('✅ Informasi umum berhasil disimpan');
+            
+            // Navigate to next section
+            setTimeout(() => {
+                const sectionWidth = window.innerWidth;
+                swiperWrapper.scrollTo({
+                    left: sectionWidth * 1,
+                    behavior: 'smooth'
+                });
+            }, 500);
+        }
+        
+        function saveInfo() {
+            showToast('✅ Informasi tambahan berhasil disimpan');
+            
+            // Navigate to preview
+            setTimeout(() => {
+                const sectionWidth = window.innerWidth;
+                swiperWrapper.scrollTo({
+                    left: sectionWidth * 3,
+                    behavior: 'smooth'
+                });
+            }, 500);
+        }
+        
+        function refreshPreview() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.classList.add('active');
+            
+            setTimeout(() => {
+                generatePreview();
+                loadingOverlay.classList.remove('active');
+                showToast('✅ Preview berhasil diperbarui');
+            }, 500);
+        }
+        
+        // Toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                top: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(76,175,80,0.95);
+                color: white;
+                padding: 12px 24px;
+                border-radius: 25px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                z-index: 10000;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                animation: slideDown 0.3s ease;
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideUp 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+        
+        // Haptic feedback
+        function triggerHaptic() {
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(10);
+            }
+        }
+        
+        // Add haptic to all buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn')) {
+                triggerHaptic();
+            }
+        });
+        
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideDown {
+                from { transform: translate(-50%, -20px); opacity: 0; }
+                to { transform: translate(-50%, 0); opacity: 1; }
+            }
+            @keyframes slideUp {
+                from { transform: translate(-50%, 0); opacity: 1; }
+                to { transform: translate(-50%, -20px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Initialize on load
+        window.onload = () => {
+            init();
+            generatePreview();
+        };
+        
+        // Auto-save to localStorage (optional feature)
+        function autoSave() {
+            const data = {
+                title: document.getElementById('title').value,
+                subtitle: document.getElementById('subtitle').value,
+                eventDate: document.getElementById('eventDate').value,
+                location: document.getElementById('location').value,
+                participants: document.getElementById('participants').value,
+                equipment: document.getElementById('equipment').value,
+                notes: document.getElementById('notes').value,
+                schedules: schedules
+            };
+            
+            try {
+                localStorage.setItem('rundownData', JSON.stringify(data));
+            } catch (e) {
+                console.log('Auto-save unavailable');
+            }
+        }
+        
+        // Load saved data
+        function loadSaved() {
+            try {
+                const saved = localStorage.getItem('rundownData');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    
+                    if (confirm('🔄 Ada data tersimpan. Muat data sebelumnya?')) {
+                        document.getElementById('title').value = data.title || '';
+                        document.getElementById('subtitle').value = data.subtitle || '';
+                        document.getElementById('eventDate').value = data.eventDate || '';
+                        document.getElementById('location').value = data.location || '';
+                        document.getElementById('participants').value = data.participants || '';
+                        document.getElementById('equipment').value = data.equipment || '';
+                        document.getElementById('notes').value = data.notes || '';
+                        
+                        // Clear existing schedules
+                        document.getElementById('scheduleContainer').innerHTML = '';
+                        scheduleCount = 0;
+                        
+                        // Load schedules
+                        if (data.schedules) {
+                            Object.keys(data.schedules).forEach(key => {
+                                const s = data.schedules[key];
+                                addSchedule(s.startTime, s.endTime, s.title, s.description);
+                            });
+                        }
+                        
+                        showToast('✅ Data berhasil dimuat');
+                    }
+                }
+            } catch (e) {
+                console.log('No saved data');
+            }
+        }
+        
+        // Auto-save on input changes
+        let saveTimeout;
+        document.addEventListener('input', () => {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(autoSave, 1000);
+        });
+        
+        // Check for saved data on startup
+        setTimeout(loadSaved, 500);
