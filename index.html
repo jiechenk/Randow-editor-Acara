@@ -487,7 +487,7 @@
                     <input type="text" id="participants" value="Panitia & Peserta" placeholder="Masukkan target peserta">
                 </div>
                 
-                <button class="btn btn-primary" onclick="saveAndNext()">✅ Simpan & Lanjut</button>
+                <button class="btn btn-primary" onclick="window.saveAndNext()">✅ Simpan & Lanjut</button>
             </div>
             <div class="swipe-hint">← Geser untuk section berikutnya →</div>
         </div>
@@ -497,7 +497,7 @@
             <div class="card">
                 <h2>⏰ Jadwal Kegiatan</h2>
                 <div id="scheduleContainer"></div>
-                <button class="btn btn-add" onclick="addSchedule()">+ Tambah Jadwal Baru</button>
+                <button class="btn btn-add" onclick="window.addSchedule()">+ Tambah Jadwal Baru</button>
             </div>
             <div class="swipe-hint">← Geser untuk navigasi →</div>
         </div>
@@ -517,7 +517,7 @@
                     <textarea id="notes" placeholder="Masukkan catatan penting">Kegiatan disesuaikan dengan cuaca dan kondisi lapangan</textarea>
                 </div>
                 
-                <button class="btn btn-primary" onclick="saveInfo()">✅ Simpan Informasi</button>
+                <button class="btn btn-primary" onclick="window.saveInfo()">✅ Simpan Informasi</button>
             </div>
             <div class="swipe-hint">← Geser untuk navigasi →</div>
         </div>
@@ -546,7 +546,7 @@
             </div>
             
             <div style="padding: 15px;">
-                <button class="btn btn-primary" onclick="refreshPreview()">🔄 Perbarui Preview</button>
+                <button class="btn btn-primary" onclick="window.refreshPreview()">🔄 Perbarui Preview</button>
                 <button class="btn btn-secondary" onclick="window.print()">🖨️ Cetak/Download PDF</button>
             </div>
         </div>
@@ -566,6 +566,118 @@
         const schedules = {};
         let currentSection = 0;
         
+        // Define all functions globally first
+        window.addSchedule = function(startTime = '', endTime = '', title = '', description = '') {
+            scheduleCount++;
+            const id = scheduleCount;
+            schedules[id] = { startTime, endTime, title, description };
+            
+            const scheduleHTML = `
+                <div class="activity-item" id="schedule-${id}">
+                    <div class="activity-header">
+                        <h4>Kegiatan #${id}</h4>
+                        <button class="btn btn-danger" onclick="window.removeSchedule(${id})">🗑️ Hapus</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Waktu Mulai:</label>
+                        <input type="time" id="startTime-${id}" value="${startTime}" onchange="window.updateSchedule(${id})">
+                    </div>
+                    <div class="form-group">
+                        <label>Waktu Selesai:</label>
+                        <input type="time" id="endTime-${id}" value="${endTime}" onchange="window.updateSchedule(${id})">
+                    </div>
+                    <div class="form-group">
+                        <label>Judul Kegiatan:</label>
+                        <input type="text" id="title-${id}" value="${title}" placeholder="Contoh: Registrasi & Pembukaan" onchange="window.updateSchedule(${id})">
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi Kegiatan:</label>
+                        <textarea id="description-${id}" placeholder="Jelaskan detail kegiatan..." onchange="window.updateSchedule(${id})">${description}</textarea>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('scheduleContainer').insertAdjacentHTML('beforeend', scheduleHTML);
+            
+            // Show toast notification
+            showToast('✅ Jadwal baru ditambahkan');
+            
+            // Scroll to new item
+            setTimeout(() => {
+                const newItem = document.getElementById(`schedule-${id}`);
+                if (newItem) {
+                    newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }, 100);
+        };
+        
+        window.updateSchedule = function(id) {
+            schedules[id] = {
+                startTime: document.getElementById(`startTime-${id}`).value,
+                endTime: document.getElementById(`endTime-${id}`).value,
+                title: document.getElementById(`title-${id}`).value,
+                description: document.getElementById(`description-${id}`).value
+            };
+        };
+        
+        window.removeSchedule = function(id) {
+            if (confirm('Hapus kegiatan ini?')) {
+                delete schedules[id];
+                document.getElementById(`schedule-${id}`).remove();
+                showToast('Kegiatan berhasil dihapus');
+            }
+        };
+        
+        window.saveAndNext = function() {
+            const title = document.getElementById('title').value;
+            const eventDate = document.getElementById('eventDate').value;
+            
+            if (!title) {
+                alert('⚠️ Judul program tidak boleh kosong!');
+                return;
+            }
+            
+            if (!eventDate) {
+                alert('⚠️ Tanggal kegiatan tidak boleh kosong!');
+                return;
+            }
+            
+            showToast('✅ Informasi umum berhasil disimpan');
+            
+            // Navigate to next section
+            setTimeout(() => {
+                const sectionWidth = window.innerWidth;
+                document.getElementById('swiperWrapper').scrollTo({
+                    left: sectionWidth * 1,
+                    behavior: 'smooth'
+                });
+            }, 500);
+        };
+        
+        window.saveInfo = function() {
+            showToast('✅ Informasi tambahan berhasil disimpan');
+            
+            // Navigate to preview
+            setTimeout(() => {
+                const sectionWidth = window.innerWidth;
+                document.getElementById('swiperWrapper').scrollTo({
+                    left: sectionWidth * 3,
+                    behavior: 'smooth'
+                });
+            }, 500);
+        };
+        
+        window.refreshPreview = function() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.classList.add('active');
+            
+            setTimeout(() => {
+                generatePreview();
+                loadingOverlay.classList.remove('active');
+                showToast('✅ Preview berhasil diperbarui');
+            }, 500);
+        };
+        
         // Swiper functionality
         const swiperWrapper = document.getElementById('swiperWrapper');
         const navDots = document.querySelectorAll('.nav-dot');
@@ -578,30 +690,34 @@
         }
         
         // Detect scroll position
-        swiperWrapper.addEventListener('scroll', () => {
-            const scrollLeft = swiperWrapper.scrollLeft;
-            const sectionWidth = window.innerWidth;
-            const newSection = Math.round(scrollLeft / sectionWidth);
-            
-            if (newSection !== currentSection) {
-                currentSection = newSection;
-                updateNavDots(currentSection);
+        if (swiperWrapper) {
+            swiperWrapper.addEventListener('scroll', () => {
+                const scrollLeft = swiperWrapper.scrollLeft;
+                const sectionWidth = window.innerWidth;
+                const newSection = Math.round(scrollLeft / sectionWidth);
                 
-                // Auto refresh preview when entering section 3
-                if (currentSection === 3) {
-                    generatePreview();
+                if (newSection !== currentSection) {
+                    currentSection = newSection;
+                    updateNavDots(currentSection);
+                    
+                    // Auto refresh preview when entering section 3
+                    if (currentSection === 3) {
+                        generatePreview();
+                    }
                 }
-            }
-        });
+            });
+        }
         
         // Click navigation dots to jump to section
         navDots.forEach((dot, index) => {
             dot.addEventListener('click', () => {
                 const sectionWidth = window.innerWidth;
-                swiperWrapper.scrollTo({
-                    left: sectionWidth * index,
-                    behavior: 'smooth'
-                });
+                if (swiperWrapper) {
+                    swiperWrapper.scrollTo({
+                        left: sectionWidth * index,
+                        behavior: 'smooth'
+                    });
+                }
                 currentSection = index;
                 updateNavDots(index);
             });
@@ -609,13 +725,14 @@
         
         // Initialize with sample data
         function init() {
-            addSchedule('08:00', '08:30', 'Registrasi & Pembukaan', 'Peserta melakukan registrasi, pembagian kelompok, dan pengarahan umum kegiatan.');
-            addSchedule('08:30', '10:00', 'Sesi 1: Pengenalan Ekosistem Tropis', 'Materi tentang keanekaragaman hayati Sulawesi dan fauna endemik.');
-            addSchedule('10:00', '10:15', 'Istirahat & Snack', 'Waktu istirahat sambil menikmati snack lokal.');
+            window.addSchedule('08:00', '08:30', 'Registrasi & Pembukaan', 'Peserta melakukan registrasi, pembagian kelompok, dan pengarahan umum kegiatan.');
+            window.addSchedule('08:30', '10:00', 'Sesi 1: Pengenalan Ekosistem Tropis', 'Materi tentang keanekaragaman hayati Sulawesi dan fauna endemik.');
+            window.addSchedule('10:00', '10:15', 'Istirahat & Snack', 'Waktu istirahat sambil menikmati snack lokal.');
             
             // Set default date to today
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('eventDate').value = today;
+            const dateInput = document.getElementById('eventDate');
+            if (dateInput) dateInput.value = today;
         }
         
         // Add schedule
@@ -869,10 +986,61 @@
         document.head.appendChild(style);
         
         // Initialize on load
-        window.onload = () => {
+        window.addEventListener('DOMContentLoaded', function() {
             init();
             generatePreview();
-        };
+            
+            // Setup swiper after DOM loaded
+            const wrapper = document.getElementById('swiperWrapper');
+            const dots = document.querySelectorAll('.nav-dot');
+            
+            // Update navigation dots
+            function updateNavDots(index) {
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
+            }
+            
+            // Detect scroll position
+            wrapper.addEventListener('scroll', () => {
+                const scrollLeft = wrapper.scrollLeft;
+                const sectionWidth = window.innerWidth;
+                const newSection = Math.round(scrollLeft / sectionWidth);
+                
+                if (newSection !== currentSection) {
+                    currentSection = newSection;
+                    updateNavDots(currentSection);
+                    
+                    // Auto refresh preview when entering section 3
+                    if (currentSection === 3) {
+                        generatePreview();
+                    }
+                }
+            });
+            
+            // Click navigation dots to jump to section
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    const sectionWidth = window.innerWidth;
+                    wrapper.scrollTo({
+                        left: sectionWidth * index,
+                        behavior: 'smooth'
+                    });
+                    currentSection = index;
+                    updateNavDots(index);
+                });
+            });
+            
+            // Auto-save on input changes
+            let saveTimeout;
+            document.addEventListener('input', () => {
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(autoSave, 1000);
+            });
+            
+            // Check for saved data on startup
+            setTimeout(loadSaved, 500);
+        });
         
         // Auto-save to localStorage (optional feature)
         function autoSave() {
