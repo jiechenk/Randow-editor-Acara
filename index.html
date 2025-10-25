@@ -22,7 +22,6 @@
             overflow-x: hidden;
         }
         
-        /* Mobile Header */
         .mobile-header {
             background: linear-gradient(135deg, #2d5016, #4caf50);
             color: white;
@@ -43,8 +42,29 @@
             font-size: 0.85rem;
             opacity: 0.9;
         }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .header-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .header-btn:active {
+            background: rgba(255,255,255,0.3);
+        }
         
-        /* Swiper Container */
         .swiper-wrapper {
             display: flex;
             overflow-x: auto;
@@ -66,7 +86,6 @@
             padding-bottom: 80px;
         }
         
-        /* Card Styles */
         .card {
             background: white;
             border-radius: 20px;
@@ -83,13 +102,6 @@
             padding-bottom: 10px;
         }
         
-        .card h3 {
-            color: #4caf50;
-            font-size: 1.1rem;
-            margin: 20px 0 12px 0;
-        }
-        
-        /* Form Elements */
         .form-group {
             margin-bottom: 15px;
         }
@@ -127,13 +139,24 @@
             min-height: 80px;
         }
         
-        /* Activity Item */
         .activity-item {
             background: #f9f9f9;
             border-radius: 15px;
             padding: 15px;
             margin-bottom: 15px;
             border-left: 4px solid #4caf50;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
         
         .activity-header {
@@ -147,8 +170,25 @@
             color: #2d5016;
             font-size: 1rem;
         }
+
+        .activity-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            background: transparent;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            transition: transform 0.2s;
+        }
+
+        .btn-icon:active {
+            transform: scale(0.9);
+        }
         
-        /* Buttons */
         .btn {
             padding: 12px 20px;
             border: none;
@@ -190,8 +230,13 @@
             font-size: 0.85rem;
             width: auto;
         }
+
+        .btn-export {
+            background: linear-gradient(135deg, #9c27b0, #ba68c8);
+            color: white;
+            box-shadow: 0 4px 15px rgba(156,39,176,0.3);
+        }
         
-        /* Preview Section */
         .preview-container {
             background: white;
             border-radius: 20px;
@@ -221,7 +266,6 @@
             padding: 20px 15px;
         }
         
-        /* Timeline */
         .timeline {
             position: relative;
             padding-left: 35px;
@@ -286,7 +330,6 @@
             font-size: 0.9rem;
         }
         
-        /* Info Box */
         .info-box {
             background: linear-gradient(135deg, #fff3e0, #ffe0b2);
             border-left: 5px solid #ff9800;
@@ -325,7 +368,6 @@
             margin-bottom: 5px;
         }
         
-        /* Navigation Dots */
         .nav-dots {
             position: fixed;
             bottom: 20px;
@@ -346,6 +388,7 @@
             border-radius: 50%;
             background: rgba(255,255,255,0.5);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
         
         .nav-dot.active {
@@ -354,7 +397,6 @@
             background: white;
         }
         
-        /* Loading Overlay */
         .loading-overlay {
             display: none;
             position: fixed;
@@ -393,7 +435,6 @@
             font-size: 1rem;
         }
         
-        /* Swipe Hint */
         .swipe-hint {
             text-align: center;
             padding: 10px;
@@ -407,7 +448,150 @@
             50% { opacity: 1; }
         }
         
-        /* Print Styles */
+        @keyframes slideDown {
+            from { transform: translate(-50%, -20px); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translate(-50%, 0); opacity: 1; }
+            to { transform: translate(-50%, -20px); opacity: 0; }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .modal-header h3 {
+            color: #2d5016;
+            font-size: 1.2rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2d5016;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .template-item {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid #4caf50;
+        }
+
+        .template-item:active {
+            transform: scale(0.98);
+            background: #e8f5e9;
+        }
+
+        .template-item h4 {
+            color: #2d5016;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        .template-item p {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .export-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .export-btn:active {
+            transform: scale(0.98);
+        }
+
+        .duration-badge {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
         @media print {
             body {
                 background: white;
@@ -416,7 +600,8 @@
             .mobile-header,
             .nav-dots,
             .swipe-hint,
-            .btn {
+            .btn,
+            .header-actions {
                 display: none !important;
             }
             
@@ -442,22 +627,56 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
     <div class="mobile-header">
         <h1>📋 Rundown Editor</h1>
         <p>Buat dan kelola jadwal kegiatan</p>
+        <div class="header-actions">
+            <button class="header-btn" onclick="showTemplates()">📑 Template</button>
+            <button class="header-btn" onclick="showStats()">📊 Statistik</button>
+            <button class="header-btn" onclick="clearAll()">🗑️ Reset</button>
+        </div>
     </div>
     
-    <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
         <div class="loading-text">Memproses...</div>
     </div>
+
+    <div class="modal" id="templatesModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📑 Template Rundown</h3>
+                <button class="close-btn" onclick="closeModal('templatesModal')">×</button>
+            </div>
+            <div id="templatesList"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="statsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📊 Statistik Rundown</h3>
+                <button class="close-btn" onclick="closeModal('statsModal')">×</button>
+            </div>
+            <div id="statsContent"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📤 Export Rundown</h3>
+                <button class="close-btn" onclick="closeModal('exportModal')">×</button>
+            </div>
+            <div class="export-options">
+                <button class="export-btn" onclick="exportAsPDF()">🖨️ Download PDF</button>
+                <button class="export-btn" onclick="exportAsJSON()">💾 Export JSON</button>
+                <button class="export-btn" onclick="copyToClipboard()">📋 Salin ke Clipboard</button>
+            </div>
+        </div>
+    </div>
     
-    <!-- Swiper Container -->
     <div class="swiper-wrapper" id="swiperWrapper">
-        
-        <!-- Section 1: Informasi Umum -->
         <div class="swipe-section" data-section="0">
             <div class="card">
                 <h2>📋 Informasi Umum</h2>
@@ -487,22 +706,20 @@
                     <input type="text" id="participants" value="Panitia & Peserta" placeholder="Masukkan target peserta">
                 </div>
                 
-                <button class="btn btn-primary" onclick="window.saveAndNext()">✅ Simpan & Lanjut</button>
+                <button class="btn btn-primary" onclick="saveAndNext()">✅ Simpan & Lanjut</button>
             </div>
             <div class="swipe-hint">← Geser untuk section berikutnya →</div>
         </div>
         
-        <!-- Section 2: Jadwal Kegiatan -->
         <div class="swipe-section" data-section="1">
             <div class="card">
                 <h2>⏰ Jadwal Kegiatan</h2>
                 <div id="scheduleContainer"></div>
-                <button class="btn btn-add" onclick="window.addSchedule()">+ Tambah Jadwal Baru</button>
+                <button class="btn btn-add" onclick="addSchedule()">+ Tambah Jadwal Baru</button>
             </div>
             <div class="swipe-hint">← Geser untuk navigasi →</div>
         </div>
         
-        <!-- Section 3: Informasi Tambahan -->
         <div class="swipe-section" data-section="2">
             <div class="card">
                 <h2>ℹ️ Informasi Tambahan</h2>
@@ -517,12 +734,11 @@
                     <textarea id="notes" placeholder="Masukkan catatan penting">Kegiatan disesuaikan dengan cuaca dan kondisi lapangan</textarea>
                 </div>
                 
-                <button class="btn btn-primary" onclick="window.saveInfo()">✅ Simpan Informasi</button>
+                <button class="btn btn-primary" onclick="saveInfo()">✅ Simpan Informasi</button>
             </div>
             <div class="swipe-hint">← Geser untuk navigasi →</div>
         </div>
         
-        <!-- Section 4: Preview & Export -->
         <div class="swipe-section" data-section="3">
             <div class="preview-container">
                 <div class="preview-header">
@@ -546,14 +762,13 @@
             </div>
             
             <div style="padding: 15px;">
-                <button class="btn btn-primary" onclick="window.refreshPreview()">🔄 Perbarui Preview</button>
-                <button class="btn btn-secondary" onclick="window.print()">🖨️ Cetak/Download PDF</button>
+                <button class="btn btn-primary" onclick="refreshPreview()">🔄 Perbarui Preview</button>
+                <button class="btn btn-secondary" onclick="window.print()">🖨️ Cetak PDF</button>
+                <button class="btn btn-export" onclick="showExportModal()">📤 Export Data</button>
             </div>
         </div>
-        
     </div>
     
-    <!-- Navigation Dots -->
     <div class="nav-dots" id="navDots">
         <div class="nav-dot active"></div>
         <div class="nav-dot"></div>
@@ -565,70 +780,129 @@
         let scheduleCount = 0;
         const schedules = {};
         let currentSection = 0;
+
+        const templates = [
+            {
+                name: "Workshop & Pelatihan",
+                description: "Template untuk acara workshop atau pelatihan",
+                schedules: [
+                    { startTime: "08:00", endTime: "08:30", title: "Registrasi Peserta", description: "Pendaftaran ulang dan pembagian kit peserta" },
+                    { startTime: "08:30", endTime: "09:00", title: "Pembukaan", description: "Sambutan pembukaan dan pengenalan narasumber" },
+                    { startTime: "09:00", endTime: "10:30", title: "Sesi 1: Materi Utama", description: "Penyampaian materi oleh narasumber" },
+                    { startTime: "10:30", endTime: "10:45", title: "Coffee Break", description: "Istirahat dan networking" },
+                    { startTime: "10:45", endTime: "12:00", title: "Sesi 2: Praktik", description: "Praktik dan diskusi kelompok" }
+                ]
+            },
+            {
+                name: "Acara Outdoor",
+                description: "Template untuk kegiatan di alam terbuka",
+                schedules: [
+                    { startTime: "06:00", endTime: "06:30", title: "Persiapan & Cek Perlengkapan", description: "Briefing keamanan dan pengecekan peralatan" },
+                    { startTime: "06:30", endTime: "08:00", title: "Perjalanan", description: "Perjalanan menuju lokasi kegiatan" },
+                    { startTime: "08:00", endTime: "10:00", title: "Kegiatan Utama", description: "Pelaksanaan kegiatan outdoor" },
+                    { startTime: "10:00", endTime: "10:30", title: "Istirahat", description: "Istirahat dan snack" }
+                ]
+            },
+            {
+                name: "Seminar & Konferensi",
+                description: "Template untuk acara seminar formal",
+                schedules: [
+                    { startTime: "08:00", endTime: "08:45", title: "Registrasi", description: "Registrasi peserta dan welcome coffee" },
+                    { startTime: "08:45", endTime: "09:00", title: "Pembukaan", description: "Pembukaan acara dan menyanyikan lagu kebangsaan" },
+                    { startTime: "09:00", endTime: "10:00", title: "Keynote Speaker", description: "Pembicara utama" },
+                    { startTime: "10:00", endTime: "10:15", title: "Break", description: "Coffee break" },
+                    { startTime: "10:15", endTime: "11:30", title: "Panel Diskusi", description: "Diskusi panel dengan para ahli" }
+                ]
+            }
+        ];
+
+        function calculateDuration(startTime, endTime) {
+            if (!startTime || !endTime) return '';
+            const [sh, sm] = startTime.split(':').map(Number);
+            const [eh, em] = endTime.split(':').map(Number);
+            const minutes = (eh * 60 + em) - (sh * 60 + sm);
+            if (minutes <= 0) return '';
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            if (hours > 0 && mins > 0) return `${hours}j ${mins}m`;
+            if (hours > 0) return `${hours} jam`;
+            return `${mins} menit`;
+        }
         
-        // Define all functions globally first
-        window.addSchedule = function(startTime = '', endTime = '', title = '', description = '') {
+        function addSchedule(startTime = '', endTime = '', title = '', description = '') {
             scheduleCount++;
             const id = scheduleCount;
             schedules[id] = { startTime, endTime, title, description };
             
+            const duration = calculateDuration(startTime, endTime);
+            const durationBadge = duration ? `<span class="duration-badge">${duration}</span>` : '';
+            
             const scheduleHTML = `
                 <div class="activity-item" id="schedule-${id}">
                     <div class="activity-header">
-                        <h4>Kegiatan #${id}</h4>
-                        <button class="btn btn-danger" onclick="window.removeSchedule(${id})">🗑️ Hapus</button>
-                    </div>
-                    <div class="form-group">
-                        <label>Waktu Mulai:</label>
-                        <input type="time" id="startTime-${id}" value="${startTime}" onchange="window.updateSchedule(${id})">
-                    </div>
-                    <div class="form-group">
-                        <label>Waktu Selesai:</label>
-                        <input type="time" id="endTime-${id}" value="${endTime}" onchange="window.updateSchedule(${id})">
+                        <div>
+                            <h4>Kegiatan #${id} ${durationBadge}</h4>
+                        </div>
+                        <div class="activity-actions">
+                            <button class="btn-icon" onclick="duplicateSchedule(${id})" title="Duplikat">📋</button>
+                            <button class="btn-icon" onclick="removeSchedule(${id})" title="Hapus">🗑️</button>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Judul Kegiatan:</label>
-                        <input type="text" id="title-${id}" value="${title}" placeholder="Contoh: Registrasi & Pembukaan" onchange="window.updateSchedule(${id})">
+                        <input type="text" id="title-${id}" value="${title}" placeholder="Contoh: Registrasi & Pembukaan" onchange="updateSchedule(${id})">
                     </div>
                     <div class="form-group">
                         <label>Deskripsi Kegiatan:</label>
-                        <textarea id="description-${id}" placeholder="Jelaskan detail kegiatan..." onchange="window.updateSchedule(${id})">${description}</textarea>
+                        <textarea id="description-${id}" placeholder="Jelaskan detail kegiatan..." onchange="updateSchedule(${id})">${description}</textarea>
                     </div>
                 </div>
             `;
             
             document.getElementById('scheduleContainer').insertAdjacentHTML('beforeend', scheduleHTML);
-            
-            // Show toast notification
             showToast('✅ Jadwal baru ditambahkan');
             
-            // Scroll to new item
             setTimeout(() => {
                 const newItem = document.getElementById(`schedule-${id}`);
                 if (newItem) {
                     newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }
             }, 100);
-        };
+        }
+
+        function duplicateSchedule(id) {
+            const schedule = schedules[id];
+            if (schedule) {
+                addSchedule(schedule.startTime, schedule.endTime, schedule.title, schedule.description);
+                showToast('✅ Jadwal berhasil diduplikat');
+            }
+        }
         
-        window.updateSchedule = function(id) {
+        function updateSchedule(id) {
             schedules[id] = {
                 startTime: document.getElementById(`startTime-${id}`).value,
                 endTime: document.getElementById(`endTime-${id}`).value,
                 title: document.getElementById(`title-${id}`).value,
                 description: document.getElementById(`description-${id}`).value
             };
-        };
+            
+            const duration = calculateDuration(schedules[id].startTime, schedules[id].endTime);
+            const headerElement = document.querySelector(`#schedule-${id} .activity-header h4`);
+            if (headerElement) {
+                const durationBadge = duration ? `<span class="duration-badge">${duration}</span>` : '';
+                headerElement.innerHTML = `Kegiatan #${id} ${durationBadge}`;
+            }
+        }
         
-        window.removeSchedule = function(id) {
+        function removeSchedule(id) {
             if (confirm('Hapus kegiatan ini?')) {
                 delete schedules[id];
                 document.getElementById(`schedule-${id}`).remove();
-                showToast('Kegiatan berhasil dihapus');
+                showToast('🗑️ Kegiatan berhasil dihapus');
             }
-        };
+        }
         
-        window.saveAndNext = function() {
+        function saveAndNext() {
             const title = document.getElementById('title').value;
             const eventDate = document.getElementById('eventDate').value;
             
@@ -644,7 +918,6 @@
             
             showToast('✅ Informasi umum berhasil disimpan');
             
-            // Navigate to next section
             setTimeout(() => {
                 const sectionWidth = window.innerWidth;
                 document.getElementById('swiperWrapper').scrollTo({
@@ -652,12 +925,11 @@
                     behavior: 'smooth'
                 });
             }, 500);
-        };
+        }
         
-        window.saveInfo = function() {
+        function saveInfo() {
             showToast('✅ Informasi tambahan berhasil disimpan');
             
-            // Navigate to preview
             setTimeout(() => {
                 const sectionWidth = window.innerWidth;
                 document.getElementById('swiperWrapper').scrollTo({
@@ -665,9 +937,9 @@
                     behavior: 'smooth'
                 });
             }, 500);
-        };
+        }
         
-        window.refreshPreview = function() {
+        function refreshPreview() {
             const loadingOverlay = document.getElementById('loadingOverlay');
             loadingOverlay.classList.add('active');
             
@@ -676,138 +948,14 @@
                 loadingOverlay.classList.remove('active');
                 showToast('✅ Preview berhasil diperbarui');
             }, 500);
-        };
-        
-        // Swiper functionality
-        const swiperWrapper = document.getElementById('swiperWrapper');
-        const navDots = document.querySelectorAll('.nav-dot');
-        
-        // Update navigation dots
-        function updateNavDots(index) {
-            navDots.forEach((dot, i) => {
-                dot.classList.toggle('active', i === index);
-            });
         }
         
-        // Detect scroll position
-        if (swiperWrapper) {
-            swiperWrapper.addEventListener('scroll', () => {
-                const scrollLeft = swiperWrapper.scrollLeft;
-                const sectionWidth = window.innerWidth;
-                const newSection = Math.round(scrollLeft / sectionWidth);
-                
-                if (newSection !== currentSection) {
-                    currentSection = newSection;
-                    updateNavDots(currentSection);
-                    
-                    // Auto refresh preview when entering section 3
-                    if (currentSection === 3) {
-                        generatePreview();
-                    }
-                }
-            });
-        }
-        
-        // Click navigation dots to jump to section
-        navDots.forEach((dot, index) => {
-            dot.addEventListener('click', () => {
-                const sectionWidth = window.innerWidth;
-                if (swiperWrapper) {
-                    swiperWrapper.scrollTo({
-                        left: sectionWidth * index,
-                        behavior: 'smooth'
-                    });
-                }
-                currentSection = index;
-                updateNavDots(index);
-            });
-        });
-        
-        // Initialize with sample data
-        function init() {
-            window.addSchedule('08:00', '08:30', 'Registrasi & Pembukaan', 'Peserta melakukan registrasi, pembagian kelompok, dan pengarahan umum kegiatan.');
-            window.addSchedule('08:30', '10:00', 'Sesi 1: Pengenalan Ekosistem Tropis', 'Materi tentang keanekaragaman hayati Sulawesi dan fauna endemik.');
-            window.addSchedule('10:00', '10:15', 'Istirahat & Snack', 'Waktu istirahat sambil menikmati snack lokal.');
-            
-            // Set default date to today
-            const today = new Date().toISOString().split('T')[0];
-            const dateInput = document.getElementById('eventDate');
-            if (dateInput) dateInput.value = today;
-        }
-        
-        // Add schedule
-        window.addSchedule = function(startTime = '', endTime = '', title = '', description = '') {
-            scheduleCount++;
-            const id = scheduleCount;
-            schedules[id] = { startTime, endTime, title, description };
-            
-            const scheduleHTML = `
-                <div class="activity-item" id="schedule-${id}">
-                    <div class="activity-header">
-                        <h4>Kegiatan #${id}</h4>
-                        <button class="btn btn-danger" onclick="removeSchedule(${id})">🗑️ Hapus</button>
-                    </div>
-                    <div class="form-group">
-                        <label>Waktu Mulai:</label>
-                        <input type="time" id="startTime-${id}" value="${startTime}" onchange="updateSchedule(${id})">
-                    </div>
-                    <div class="form-group">
-                        <label>Waktu Selesai:</label>
-                        <input type="time" id="endTime-${id}" value="${endTime}" onchange="updateSchedule(${id})">
-                    </div>
-                    <div class="form-group">
-                        <label>Judul Kegiatan:</label>
-                        <input type="text" id="title-${id}" value="${title}" placeholder="Contoh: Registrasi & Pembukaan" onchange="updateSchedule(${id})">
-                    </div>
-                    <div class="form-group">
-                        <label>Deskripsi Kegiatan:</label>
-                        <textarea id="description-${id}" placeholder="Jelaskan detail kegiatan..." onchange="updateSchedule(${id})">${description}</textarea>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('scheduleContainer').insertAdjacentHTML('beforeend', scheduleHTML);
-            
-            // Show toast notification
-            showToast('✅ Jadwal baru ditambahkan');
-            
-            // Scroll to new item
-            setTimeout(() => {
-                const newItem = document.getElementById(`schedule-${id}`);
-                if (newItem) {
-                    newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }
-            }, 100);
-        }
-        
-        // Update schedule
-        window.updateSchedule = function(id) {
-            schedules[id] = {
-                startTime: document.getElementById(`startTime-${id}`).value,
-                endTime: document.getElementById(`endTime-${id}`).value,
-                title: document.getElementById(`title-${id}`).value,
-                description: document.getElementById(`description-${id}`).value
-            };
-        }
-        
-        // Remove schedule
-        window.removeSchedule = function(id) {
-            if (confirm('Hapus kegiatan ini?')) {
-                delete schedules[id];
-                document.getElementById(`schedule-${id}`).remove();
-                showToast('Kegiatan berhasil dihapus');
-            }
-        }
-        
-        // Generate preview
         function generatePreview() {
-            // Update header
             const title = document.getElementById('title').value;
             const subtitle = document.getElementById('subtitle').value;
             document.getElementById('previewTitle').textContent = `📋 ${title}`;
             document.getElementById('previewSubtitle').textContent = subtitle;
             
-            // Generate schedule timeline
             let scheduleHTML = '<div class="timeline">';
             
             const sortedSchedules = Object.keys(schedules).sort((a, b) => {
@@ -838,7 +986,6 @@
             scheduleHTML += '</div>';
             document.getElementById('previewSchedule').innerHTML = scheduleHTML;
             
-            // Generate info
             const location = document.getElementById('location').value;
             const participants = document.getElementById('participants').value;
             const eventDate = document.getElementById('eventDate').value;
@@ -867,59 +1014,190 @@
             
             document.getElementById('previewInfo').innerHTML = infoHTML;
         }
-        
-        // Save and navigate
-        window.saveAndNext = function() {
-            const title = document.getElementById('title').value;
-            const eventDate = document.getElementById('eventDate').value;
+
+        function showTemplates() {
+            const templatesList = document.getElementById('templatesList');
+            templatesList.innerHTML = '';
             
-            if (!title) {
-                alert('⚠️ Judul program tidak boleh kosong!');
-                return;
+            templates.forEach((template, index) => {
+                const templateHTML = `
+                    <div class="template-item" onclick="applyTemplate(${index})">
+                        <h4>${template.name}</h4>
+                        <p>${template.description}</p>
+                        <p style="margin-top: 5px; color: #4caf50; font-weight: 600;">${template.schedules.length} kegiatan</p>
+                    </div>
+                `;
+                templatesList.insertAdjacentHTML('beforeend', templateHTML);
+            });
+            
+            document.getElementById('templatesModal').classList.add('active');
+        }
+
+        function applyTemplate(index) {
+            if (Object.keys(schedules).length > 0) {
+                if (!confirm('Menerapkan template akan menghapus semua jadwal yang ada. Lanjutkan?')) {
+                    return;
+                }
             }
             
-            if (!eventDate) {
-                alert('⚠️ Tanggal kegiatan tidak boleh kosong!');
-                return;
-            }
+            document.getElementById('scheduleContainer').innerHTML = '';
+            scheduleCount = 0;
+            Object.keys(schedules).forEach(key => delete schedules[key]);
             
-            showToast('✅ Informasi umum berhasil disimpan');
+            const template = templates[index];
+            template.schedules.forEach(schedule => {
+                addSchedule(schedule.startTime, schedule.endTime, schedule.title, schedule.description);
+            });
             
-            // Navigate to next section
+            closeModal('templatesModal');
+            showToast(`✅ Template "${template.name}" diterapkan`);
+            
             setTimeout(() => {
                 const sectionWidth = window.innerWidth;
-                swiperWrapper.scrollTo({
+                document.getElementById('swiperWrapper').scrollTo({
                     left: sectionWidth * 1,
                     behavior: 'smooth'
                 });
             }, 500);
         }
-        
-        window.saveInfo = function() {
-            showToast('✅ Informasi tambahan berhasil disimpan');
+
+        function showStats() {
+            const statsContent = document.getElementById('statsContent');
             
-            // Navigate to preview
-            setTimeout(() => {
-                const sectionWidth = window.innerWidth;
-                swiperWrapper.scrollTo({
-                    left: sectionWidth * 3,
-                    behavior: 'smooth'
-                });
-            }, 500);
+            const totalSchedules = Object.keys(schedules).length;
+            let totalDuration = 0;
+            let earliestTime = null;
+            let latestTime = null;
+            
+            Object.values(schedules).forEach(schedule => {
+                if (schedule.startTime && schedule.endTime) {
+                    const [sh, sm] = schedule.startTime.split(':').map(Number);
+                    const [eh, em] = schedule.endTime.split(':').map(Number);
+                    const minutes = (eh * 60 + em) - (sh * 60 + sm);
+                    if (minutes > 0) totalDuration += minutes;
+                    
+                    if (!earliestTime || schedule.startTime < earliestTime) {
+                        earliestTime = schedule.startTime;
+                    }
+                    if (!latestTime || schedule.endTime > latestTime) {
+                        latestTime = schedule.endTime;
+                    }
+                }
+            });
+            
+            const hours = Math.floor(totalDuration / 60);
+            const minutes = totalDuration % 60;
+            const durationText = hours > 0 ? `${hours} jam ${minutes} menit` : `${minutes} menit`;
+            
+            statsContent.innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">${totalSchedules}</div>
+                        <div class="stat-label">Total Kegiatan</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${durationText}</div>
+                        <div class="stat-label">Total Durasi</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${earliestTime || '-'}</div>
+                        <div class="stat-label">Mulai</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${latestTime || '-'}</div>
+                        <div class="stat-label">Selesai</div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('statsModal').classList.add('active');
         }
-        
-        window.refreshPreview = function() {
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            loadingOverlay.classList.add('active');
-            
-            setTimeout(() => {
+
+        function showExportModal() {
+            document.getElementById('exportModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function clearAll() {
+            if (confirm('⚠️ Hapus semua data? Tindakan ini tidak dapat dibatalkan!')) {
+                document.getElementById('scheduleContainer').innerHTML = '';
+                scheduleCount = 0;
+                Object.keys(schedules).forEach(key => delete schedules[key]);
+                
+                document.getElementById('title').value = 'Pendidikan Dasar TSCA';
+                document.getElementById('subtitle').value = 'Program Cinta Alam & Konservasi Ekosistem';
+                document.getElementById('location').value = 'Area Konservasi Hutan Tropis Sulawesi';
+                document.getElementById('participants').value = 'Panitia & Peserta';
+                document.getElementById('equipment').value = 'Topi, sepatu trekking, air minum, buku catatan, alat tulis';
+                document.getElementById('notes').value = 'Kegiatan disesuaikan dengan cuaca dan kondisi lapangan';
+                
+                init();
                 generatePreview();
-                loadingOverlay.classList.remove('active');
-                showToast('✅ Preview berhasil diperbarui');
+                showToast('🗑️ Semua data berhasil dihapus');
+            }
+        }
+
+        function exportAsPDF() {
+            closeModal('exportModal');
+            showToast('🖨️ Menyiapkan PDF...');
+            setTimeout(() => {
+                window.print();
             }, 500);
         }
+
+        function exportAsJSON() {
+            const data = {
+                title: document.getElementById('title').value,
+                subtitle: document.getElementById('subtitle').value,
+                eventDate: document.getElementById('eventDate').value,
+                location: document.getElementById('location').value,
+                participants: document.getElementById('participants').value,
+                equipment: document.getElementById('equipment').value,
+                notes: document.getElementById('notes').value,
+                schedules: schedules
+            };
+            
+            const jsonStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `rundown_${new Date().getTime()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            closeModal('exportModal');
+            showToast('💾 JSON berhasil didownload');
+        }
+
+        function copyToClipboard() {
+            let text = `${document.getElementById('title').value}\n`;
+            text += `${document.getElementById('subtitle').value}\n\n`;
+            
+            const sortedSchedules = Object.keys(schedules).sort((a, b) => {
+                return schedules[a].startTime.localeCompare(schedules[b].startTime);
+            });
+            
+            sortedSchedules.forEach(id => {
+                const s = schedules[id];
+                if (s.startTime && s.title) {
+                    text += `${s.startTime} - ${s.endTime || '—'} | ${s.title}\n`;
+                    if (s.description) text += `${s.description}\n`;
+                    text += `\n`;
+                }
+            });
+            
+            navigator.clipboard.writeText(text).then(() => {
+                closeModal('exportModal');
+                showToast('📋 Teks berhasil disalin');
+            }).catch(() => {
+                alert('Gagal menyalin ke clipboard');
+            });
+        }
         
-        // Toast notification
         function showToast(message) {
             const toast = document.createElement('div');
             toast.textContent = message;
@@ -947,61 +1225,35 @@
             }, 2000);
         }
         
-        // Haptic feedback
         function triggerHaptic() {
             if (window.navigator && window.navigator.vibrate) {
                 window.navigator.vibrate(10);
             }
         }
         
-        // Add haptic to all buttons
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn')) {
-                triggerHaptic();
-            }
-        });
+        function init() {
+            addSchedule('08:00', '08:30', 'Registrasi & Pembukaan', 'Peserta melakukan registrasi, pembagian kelompok, dan pengarahan umum kegiatan.');
+            addSchedule('08:30', '10:00', 'Sesi 1: Pengenalan Ekosistem Tropis', 'Materi tentang keanekaragaman hayati Sulawesi dan fauna endemik.');
+            addSchedule('10:00', '10:15', 'Istirahat & Snack', 'Waktu istirahat sambil menikmati snack lokal.');
+            
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('eventDate');
+            if (dateInput) dateInput.value = today;
+        }
         
-        // Prevent zoom on double tap
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function(event) {
-            const now = Date.now();
-            if (now - lastTouchEnd <= 300) {
-                event.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
-        
-        // Add animation styles
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideDown {
-                from { transform: translate(-50%, -20px); opacity: 0; }
-                to { transform: translate(-50%, 0); opacity: 1; }
-            }
-            @keyframes slideUp {
-                from { transform: translate(-50%, 0); opacity: 1; }
-                to { transform: translate(-50%, -20px); opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // Initialize on load
         window.addEventListener('DOMContentLoaded', function() {
             init();
             generatePreview();
             
-            // Setup swiper after DOM loaded
             const wrapper = document.getElementById('swiperWrapper');
             const dots = document.querySelectorAll('.nav-dot');
             
-            // Update navigation dots
             function updateNavDots(index) {
                 dots.forEach((dot, i) => {
                     dot.classList.toggle('active', i === index);
                 });
             }
             
-            // Detect scroll position
             wrapper.addEventListener('scroll', () => {
                 const scrollLeft = wrapper.scrollLeft;
                 const sectionWidth = window.innerWidth;
@@ -1011,14 +1263,12 @@
                     currentSection = newSection;
                     updateNavDots(currentSection);
                     
-                    // Auto refresh preview when entering section 3
                     if (currentSection === 3) {
                         generatePreview();
                     }
                 }
             });
             
-            // Click navigation dots to jump to section
             dots.forEach((dot, index) => {
                 dot.addEventListener('click', () => {
                     const sectionWidth = window.innerWidth;
@@ -1031,79 +1281,37 @@
                 });
             });
             
-            // Auto-save on input changes
-            let saveTimeout;
-            document.addEventListener('input', () => {
-                clearTimeout(saveTimeout);
-                saveTimeout = setTimeout(autoSave, 1000);
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('btn') || e.target.classList.contains('header-btn')) {
+                    triggerHaptic();
+                }
+            });
+
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.remove('active');
+                    }
+                });
             });
             
-            // Check for saved data on startup
-            setTimeout(loadSaved, 500);
-        });
-        
-        // Auto-save to localStorage (optional feature)
-        function autoSave() {
-            const data = {
-                title: document.getElementById('title').value,
-                subtitle: document.getElementById('subtitle').value,
-                eventDate: document.getElementById('eventDate').value,
-                location: document.getElementById('location').value,
-                participants: document.getElementById('participants').value,
-                equipment: document.getElementById('equipment').value,
-                notes: document.getElementById('notes').value,
-                schedules: schedules
-            };
-            
-            try {
-                localStorage.setItem('rundownData', JSON.stringify(data));
-            } catch (e) {
-                console.log('Auto-save unavailable');
-            }
-        }
-        
-        // Load saved data
-        function loadSaved() {
-            try {
-                const saved = localStorage.getItem('rundownData');
-                if (saved) {
-                    const data = JSON.parse(saved);
-                    
-                    if (confirm('🔄 Ada data tersimpan. Muat data sebelumnya?')) {
-                        document.getElementById('title').value = data.title || '';
-                        document.getElementById('subtitle').value = data.subtitle || '';
-                        document.getElementById('eventDate').value = data.eventDate || '';
-                        document.getElementById('location').value = data.location || '';
-                        document.getElementById('participants').value = data.participants || '';
-                        document.getElementById('equipment').value = data.equipment || '';
-                        document.getElementById('notes').value = data.notes || '';
-                        
-                        // Clear existing schedules
-                        document.getElementById('scheduleContainer').innerHTML = '';
-                        scheduleCount = 0;
-                        
-                        // Load schedules
-                        if (data.schedules) {
-                            Object.keys(data.schedules).forEach(key => {
-                                const s = data.schedules[key];
-                                addSchedule(s.startTime, s.endTime, s.title, s.description);
-                            });
-                        }
-                        
-                        showToast('✅ Data berhasil dimuat');
-                    }
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                const now = Date.now();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
                 }
-            } catch (e) {
-                console.log('No saved data');
-            }
-        }
-        
-        // Auto-save on input changes
-        let saveTimeout;
-        document.addEventListener('input', () => {
-            clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(autoSave, 1000);
+                lastTouchEnd = now;
+            }, false);
         });
-        
-        // Check for saved data on startup
-        setTimeout(loadSaved, 500);
+    </script>
+</body>
+</html>Waktu Mulai:</label>
+                        <input type="time" id="startTime-${id}" value="${startTime}" onchange="updateSchedule(${id})">
+                    </div>
+                    <div class="form-group">
+                        <label>Waktu Selesai:</label>
+                        <input type="time" id="endTime-${id}" value="${endTime}" onchange="updateSchedule(${id})">
+                    </div>
+                    <div class="form-group">
+                        <label>
