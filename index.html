@@ -591,6 +591,104 @@
             font-weight: 600;
             margin-left: 8px;
         }
+
+        .duration-badge.short {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .duration-badge.medium {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .duration-badge.long {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        .time-input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .quick-duration {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f0f7ff;
+            border-radius: 10px;
+        }
+
+        .quick-duration-label {
+            width: 100%;
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .quick-btn {
+            background: #e8f5e9;
+            border: 1px solid #4caf50;
+            color: #2d5016;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .quick-btn:active {
+            background: #4caf50;
+            color: white;
+            transform: scale(0.95);
+        }
+
+        .timeline-duration {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+            font-weight: 600;
+        }
+
+        .time-conflict {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            color: #c62828;
+            font-weight: 600;
+        }
+
+        .time-overlap-warning {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            color: #e65100;
+            animation: pulse 2s infinite;
+            font-weight: 600;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
         
         @media print {
             body {
@@ -628,8 +726,8 @@
 </head>
 <body>
     <div class="mobile-header">
-        <h1>📋 Rundown Editor</h1>
-        <p>Buat dan kelola jadwal kegiatan</p>
+        <h1>📋 Rundown Editor Pro</h1>
+        <p>Buat dan kelola jadwal kegiatan dengan manajemen waktu</p>
         <div class="header-actions">
             <button class="header-btn" onclick="showTemplates()">📑 Template</button>
             <button class="header-btn" onclick="showStats()">📊 Statistik</button>
@@ -786,27 +884,6 @@
                 name: "Workshop & Pelatihan",
                 description: "Template untuk acara workshop atau pelatihan",
                 schedules: [
-                    { startTime: "08:00", endTime: "08:30", title: "Registrasi Peserta", description: "Pendaftaran ulang dan pembagian kit peserta" },
-                    { startTime: "08:30", endTime: "09:00", title: "Pembukaan", description: "Sambutan pembukaan dan pengenalan narasumber" },
-                    { startTime: "09:00", endTime: "10:30", title: "Sesi 1: Materi Utama", description: "Penyampaian materi oleh narasumber" },
-                    { startTime: "10:30", endTime: "10:45", title: "Coffee Break", description: "Istirahat dan networking" },
-                    { startTime: "10:45", endTime: "12:00", title: "Sesi 2: Praktik", description: "Praktik dan diskusi kelompok" }
-                ]
-            },
-            {
-                name: "Acara Outdoor",
-                description: "Template untuk kegiatan di alam terbuka",
-                schedules: [
-                    { startTime: "06:00", endTime: "06:30", title: "Persiapan & Cek Perlengkapan", description: "Briefing keamanan dan pengecekan peralatan" },
-                    { startTime: "06:30", endTime: "08:00", title: "Perjalanan", description: "Perjalanan menuju lokasi kegiatan" },
-                    { startTime: "08:00", endTime: "10:00", title: "Kegiatan Utama", description: "Pelaksanaan kegiatan outdoor" },
-                    { startTime: "10:00", endTime: "10:30", title: "Istirahat", description: "Istirahat dan snack" }
-                ]
-            },
-            {
-                name: "Seminar & Konferensi",
-                description: "Template untuk acara seminar formal",
-                schedules: [
                     { startTime: "08:00", endTime: "08:45", title: "Registrasi", description: "Registrasi peserta dan welcome coffee" },
                     { startTime: "08:45", endTime: "09:00", title: "Pembukaan", description: "Pembukaan acara dan menyanyikan lagu kebangsaan" },
                     { startTime: "09:00", endTime: "10:00", title: "Keynote Speaker", description: "Pembicara utama" },
@@ -828,14 +905,83 @@
             if (hours > 0) return `${hours} jam`;
             return `${mins} menit`;
         }
+
+        function getDurationClass(startTime, endTime) {
+            if (!startTime || !endTime) return '';
+            const [sh, sm] = startTime.split(':').map(Number);
+            const [eh, em] = endTime.split(':').map(Number);
+            const minutes = (eh * 60 + em) - (sh * 60 + sm);
+            if (minutes <= 0) return '';
+            if (minutes <= 30) return 'short';
+            if (minutes <= 90) return 'medium';
+            return 'long';
+        }
+
+        function addMinutesToTime(time, minutesToAdd) {
+            if (!time) return '';
+            const [h, m] = time.split(':').map(Number);
+            const totalMinutes = h * 60 + m + minutesToAdd;
+            const newH = Math.floor(totalMinutes / 60) % 24;
+            const newM = totalMinutes % 60;
+            return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
+        }
+
+        function checkTimeConflict(id, startTime, endTime) {
+            if (!startTime || !endTime) return null;
+            
+            const [sh, sm] = startTime.split(':').map(Number);
+            const [eh, em] = endTime.split(':').map(Number);
+            const start = sh * 60 + sm;
+            const end = eh * 60 + em;
+
+            if (end <= start) {
+                return { type: 'invalid', message: '⚠️ Waktu selesai harus lebih besar dari waktu mulai!' };
+            }
+
+            for (let otherId in schedules) {
+                if (otherId != id) {
+                    const other = schedules[otherId];
+                    if (other.startTime && other.endTime) {
+                        const [osh, osm] = other.startTime.split(':').map(Number);
+                        const [oeh, oem] = other.endTime.split(':').map(Number);
+                        const ostart = osh * 60 + osm;
+                        const oend = oeh * 60 + oem;
+
+                        if ((start >= ostart && start < oend) || (end > ostart && end <= oend) || (start <= ostart && end >= oend)) {
+                            return { type: 'overlap', message: `⚠️ Bentrok dengan Kegiatan #${otherId}`, otherId };
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        function suggestNextTime(id) {
+            const allTimes = Object.values(schedules)
+                .filter(s => s.endTime)
+                .map(s => s.endTime)
+                .sort();
+            
+            if (allTimes.length > 0) {
+                return allTimes[allTimes.length - 1];
+            }
+            return '08:00';
+        }
         
         function addSchedule(startTime = '', endTime = '', title = '', description = '') {
             scheduleCount++;
             const id = scheduleCount;
+            
+            if (!startTime) {
+                startTime = suggestNextTime(id);
+            }
+            
             schedules[id] = { startTime, endTime, title, description };
             
             const duration = calculateDuration(startTime, endTime);
-            const durationBadge = duration ? `<span class="duration-badge">${duration}</span>` : '';
+            const durationClass = getDurationClass(startTime, endTime);
+            const durationBadge = duration ? `<span class="duration-badge ${durationClass}">${duration}</span>` : '';
             
             const scheduleHTML = `
                 <div class="activity-item" id="schedule-${id}">
@@ -848,12 +994,35 @@
                             <button class="btn-icon" onclick="removeSchedule(${id})" title="Hapus">🗑️</button>
                         </div>
                     </div>
+                    
+                    <div class="time-input-group">
+                        <div class="form-group">
+                            <label>⏰ Waktu Mulai:</label>
+                            <input type="time" id="startTime-${id}" value="${startTime}" onchange="updateSchedule(${id})">
+                        </div>
+                        <div class="form-group">
+                            <label>⏰ Waktu Selesai:</label>
+                            <input type="time" id="endTime-${id}" value="${endTime}" onchange="updateSchedule(${id})">
+                        </div>
+                    </div>
+                    
+                    <div class="quick-duration">
+                        <div class="quick-duration-label">⚡ Atur Durasi Cepat:</div>
+                        <button class="quick-btn" onclick="setQuickDuration(${id}, 15)">15 menit</button>
+                        <button class="quick-btn" onclick="setQuickDuration(${id}, 30)">30 menit</button>
+                        <button class="quick-btn" onclick="setQuickDuration(${id}, 60)">1 jam</button>
+                        <button class="quick-btn" onclick="setQuickDuration(${id}, 90)">1.5 jam</button>
+                        <button class="quick-btn" onclick="setQuickDuration(${id}, 120)">2 jam</button>
+                    </div>
+                    
+                    <div id="conflict-${id}"></div>
+                    
                     <div class="form-group">
-                        <label>Judul Kegiatan:</label>
+                        <label>📝 Judul Kegiatan:</label>
                         <input type="text" id="title-${id}" value="${title}" placeholder="Contoh: Registrasi & Pembukaan" onchange="updateSchedule(${id})">
                     </div>
                     <div class="form-group">
-                        <label>Deskripsi Kegiatan:</label>
+                        <label>📄 Deskripsi Kegiatan:</label>
                         <textarea id="description-${id}" placeholder="Jelaskan detail kegiatan..." onchange="updateSchedule(${id})">${description}</textarea>
                     </div>
                 </div>
@@ -868,6 +1037,19 @@
                     newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }
             }, 100);
+        }
+
+        function setQuickDuration(id, minutes) {
+            const startTime = document.getElementById(`startTime-${id}`).value;
+            if (!startTime) {
+                alert('⚠️ Tentukan waktu mulai terlebih dahulu!');
+                return;
+            }
+            
+            const endTime = addMinutesToTime(startTime, minutes);
+            document.getElementById(`endTime-${id}`).value = endTime;
+            updateSchedule(id);
+            showToast(`⏱️ Durasi ${minutes} menit diterapkan`);
         }
 
         function duplicateSchedule(id) {
@@ -887,10 +1069,24 @@
             };
             
             const duration = calculateDuration(schedules[id].startTime, schedules[id].endTime);
+            const durationClass = getDurationClass(schedules[id].startTime, schedules[id].endTime);
             const headerElement = document.querySelector(`#schedule-${id} .activity-header h4`);
             if (headerElement) {
-                const durationBadge = duration ? `<span class="duration-badge">${duration}</span>` : '';
+                const durationBadge = duration ? `<span class="duration-badge ${durationClass}">${duration}</span>` : '';
                 headerElement.innerHTML = `Kegiatan #${id} ${durationBadge}`;
+            }
+
+            const conflict = checkTimeConflict(id, schedules[id].startTime, schedules[id].endTime);
+            const conflictDiv = document.getElementById(`conflict-${id}`);
+            
+            if (conflict) {
+                if (conflict.type === 'invalid') {
+                    conflictDiv.innerHTML = `<div class="time-conflict">${conflict.message}</div>`;
+                } else if (conflict.type === 'overlap') {
+                    conflictDiv.innerHTML = `<div class="time-overlap-warning">${conflict.message}</div>`;
+                }
+            } else {
+                conflictDiv.innerHTML = '';
             }
         }
         
@@ -970,9 +1166,12 @@
                 sortedSchedules.forEach(id => {
                     const s = schedules[id];
                     if (s.startTime && s.title) {
+                        const duration = calculateDuration(s.startTime, s.endTime);
+                        const durationBadge = duration ? `<span class="timeline-duration">${duration}</span>` : '';
+                        
                         scheduleHTML += `
                             <div class="timeline-item">
-                                <div class="time">${s.startTime} - ${s.endTime || '—'}</div>
+                                <div class="time">${s.startTime} - ${s.endTime || '—'}${durationBadge}</div>
                                 <div class="activity">
                                     <h4>${s.title}</h4>
                                     <p>${s.description || 'Tidak ada deskripsi'}</p>
@@ -1087,7 +1286,7 @@
             
             const hours = Math.floor(totalDuration / 60);
             const minutes = totalDuration % 60;
-            const durationText = hours > 0 ? `${hours} jam ${minutes} menit` : `${minutes} menit`;
+            const durationText = hours > 0 ? `${hours}j ${minutes}m` : `${minutes}m`;
             
             statsContent.innerHTML = `
                 <div class="stats-grid">
@@ -1282,7 +1481,7 @@
             });
             
             document.addEventListener('click', (e) => {
-                if (e.target.classList.contains('btn') || e.target.classList.contains('header-btn')) {
+                if (e.target.classList.contains('btn') || e.target.classList.contains('header-btn') || e.target.classList.contains('quick-btn')) {
                     triggerHaptic();
                 }
             });
@@ -1306,12 +1505,4 @@
         });
     </script>
 </body>
-</html>Waktu Mulai:</label>
-                        <input type="time" id="startTime-${id}" value="${startTime}" onchange="updateSchedule(${id})">
-                    </div>
-                    <div class="form-group">
-                        <label>Waktu Selesai:</label>
-                        <input type="time" id="endTime-${id}" value="${endTime}" onchange="updateSchedule(${id})">
-                    </div>
-                    <div class="form-group">
-                        <label>
+</html>
