@@ -619,7 +619,7 @@
         }
         
         // Add schedule
-        function addSchedule(startTime = '', endTime = '', title = '', description = '') {
+        window.addSchedule = function(startTime = '', endTime = '', title = '', description = '') {
             scheduleCount++;
             const id = scheduleCount;
             schedules[id] = { startTime, endTime, title, description };
@@ -651,6 +651,9 @@
             
             document.getElementById('scheduleContainer').insertAdjacentHTML('beforeend', scheduleHTML);
             
+            // Show toast notification
+            showToast('✅ Jadwal baru ditambahkan');
+            
             // Scroll to new item
             setTimeout(() => {
                 const newItem = document.getElementById(`schedule-${id}`);
@@ -661,7 +664,7 @@
         }
         
         // Update schedule
-        function updateSchedule(id) {
+        window.updateSchedule = function(id) {
             schedules[id] = {
                 startTime: document.getElementById(`startTime-${id}`).value,
                 endTime: document.getElementById(`endTime-${id}`).value,
@@ -671,7 +674,7 @@
         }
         
         // Remove schedule
-        function removeSchedule(id) {
+        window.removeSchedule = function(id) {
             if (confirm('Hapus kegiatan ini?')) {
                 delete schedules[id];
                 document.getElementById(`schedule-${id}`).remove();
@@ -749,7 +752,7 @@
         }
         
         // Save and navigate
-        function saveAndNext() {
+        window.saveAndNext = function() {
             const title = document.getElementById('title').value;
             const eventDate = document.getElementById('eventDate').value;
             
@@ -775,7 +778,7 @@
             }, 500);
         }
         
-        function saveInfo() {
+        window.saveInfo = function() {
             showToast('✅ Informasi tambahan berhasil disimpan');
             
             // Navigate to preview
@@ -788,7 +791,7 @@
             }, 500);
         }
         
-        function refreshPreview() {
+        window.refreshPreview = function() {
             const loadingOverlay = document.getElementById('loadingOverlay');
             loadingOverlay.classList.add('active');
             
